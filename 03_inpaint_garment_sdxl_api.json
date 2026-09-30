@@ -1,0 +1,208 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "sd_xl_base_1.0.safetensors"
+    },
+    "_meta": {
+      "title": "CHECKPOINT"
+    }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "PLACEHOLDER",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "POSITIVE_PROMPT"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "lowres, blurry, deformed hands, extra fingers, bad anatomy, distorted clothing, wrong logo, text, watermark, cartoon, illustration, cropped head",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "NEGATIVE_PROMPT"
+    }
+  },
+  "8": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "reference_with_mask.png"
+    },
+    "_meta": {
+      "title": "INPUT_IMAGE"
+    }
+  },
+  "9": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "8",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 1216,
+      "crop": "center"
+    },
+    "_meta": {
+      "title": "RESIZE_IMAGE"
+    }
+  },
+  "10": {
+    "class_type": "MaskToImage",
+    "inputs": {
+      "mask": [
+        "8",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "MASK_TO_IMG"
+    }
+  },
+  "11": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "10",
+        0
+      ],
+      "upscale_method": "nearest-exact",
+      "width": 832,
+      "height": 1216,
+      "crop": "center"
+    },
+    "_meta": {
+      "title": "RESIZE_MASK"
+    }
+  },
+  "12": {
+    "class_type": "ImageToMask",
+    "inputs": {
+      "image": [
+        "11",
+        0
+      ],
+      "channel": "red"
+    },
+    "_meta": {
+      "title": "IMG_TO_MASK"
+    }
+  },
+  "13": {
+    "class_type": "GrowMask",
+    "inputs": {
+      "mask": [
+        "12",
+        0
+      ],
+      "expand": 8,
+      "tapered_corners": true
+    },
+    "_meta": {
+      "title": "GROW_MASK"
+    }
+  },
+  "14": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": [
+        "9",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    },
+    "_meta": {
+      "title": "ENCODE"
+    }
+  },
+  "15": {
+    "class_type": "SetLatentNoiseMask",
+    "inputs": {
+      "samples": [
+        "14",
+        0
+      ],
+      "mask": [
+        "13",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "APPLY_MASK"
+    }
+  },
+  "5": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "2",
+        0
+      ],
+      "negative": [
+        "3",
+        0
+      ],
+      "latent_image": [
+        "15",
+        0
+      ],
+      "seed": 42,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.85
+    },
+    "_meta": {
+      "title": "SAMPLER"
+    }
+  },
+  "98": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "5",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    },
+    "_meta": {
+      "title": "DECODE"
+    }
+  },
+  "99": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "98",
+        0
+      ],
+      "filename_prefix": "fashion/inpaint"
+    },
+    "_meta": {
+      "title": "SAVE"
+    }
+  }
+}
