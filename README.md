@@ -49,7 +49,8 @@ Erase the garment in a PNG (transparent area = region to regenerate), upload it,
 3. `garment_qa.py` scores colour drift against the official hex; anything above the threshold is marked `REVIEW`.
    Pass `--mask` for precise scoring; without it a torso-region heuristic is used.
 
-## Roadmap (not implemented in this POC)
+## Roadmap 
+
 - **Consistent model identity:** IPAdapter / InstantID face + body reference, then a small LoRA trained on the brand's chosen model.
 - **Exact product fidelity:** garment reference conditioning / try-on nodes, LoRA per hero product, logo-preservation pass.
 - **Video:** image-to-video (e.g. Wan 2.x / LTX) for 5–10 s social clips and try-on motion, same client + batch structure.
